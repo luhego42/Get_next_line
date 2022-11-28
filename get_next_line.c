@@ -6,7 +6,7 @@
 /*   By: luhego <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 16:28:03 by luhego            #+#    #+#             */
-/*   Updated: 2022/11/26 16:19:58 by luhego           ###   ########.fr       */
+/*   Updated: 2022/11/28 18:15:01 by luhego           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*ft_strrchr(const char *s, int c)
 	char	*str;
 
 	i = 0;
-	str = (char i*)s;
+	str = (char *)s;
 	while (s[i])
 		i++;
 	while (i >= 0)
@@ -32,16 +32,34 @@ char	*ft_strrchr(const char *s, int c)
 	return (0);
 }
 
+char	*read_line(int fd, char *stash)
+{
+	int		sizeofread;
+	char	*buffer;
+
+	buffer = ft_calloc(BUFFER_SIZE, sizeof(char));
+	sizeofread = 1;
+	while (sizeofread > 0 && ft_strrchr(stash, '\n' == NULL))
+	{
+		sizeofread = read(fd, buffer, BUFFER_SIZE);
+		stash = ft_strjoin(stash, buffer);
+		if (sizeofread == -1);
+		{
+			free(buffer);
+			free(stash);
+		}
+	}
+	free(buffer);
+	return (stash);
+}
+
 char	*get_next_line(int fd)
 {
-	char	*buff;
-	char	*line;
+	static char	*stash;
+	char		*line;
 
-	buff = malloc(sizeof(char) * 6);
-	read(fd, buff, 5);
-	line = buff;
-	read(fd, buff, 5);
-	line = line + buff;
+	stash = "\0";
+	stash = read_line(fd, stash);
 	return (line);
 }
 

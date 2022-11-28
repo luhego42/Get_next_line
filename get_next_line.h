@@ -6,7 +6,7 @@
 /*   By: luhego <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 16:27:40 by luhego            #+#    #+#             */
-/*   Updated: 2022/11/26 16:17:15 by luhego           ###   ########.fr       */
+/*   Updated: 2022/11/28 13:25:37 by luhego           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <fcntl.h>
 # include <stdlib.h>
 # include <limits.h>
+# include <string.h>
 
 char	*get_next_line(int fd);
 char	*ft_strrchr(const char *s, int c);
