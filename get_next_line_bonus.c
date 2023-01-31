@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: luhego <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 16:28:03 by luhego            #+#    #+#             */
-/*   Updated: 2023/01/31 17:17:31 by luhego           ###   ########.fr       */
+/*   Updated: 2023/01/31 16:40:14 by luhego           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static int	ft_line_len(char *line)
 {
@@ -67,7 +67,7 @@ static char	*read_line(int fd, char *stash)
 	int		sizeofread;
 	char	*line;
 
-	line = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+	line = ft_calloc(BUFFER_SIZE, sizeof(char));
 	sizeofread = 1;
 	if (stash)
 		ft_strlcat(line, stash, BUFFER_SIZE);
@@ -86,22 +86,22 @@ static char	*read_line(int fd, char *stash)
 
 char	*get_next_line(int fd)
 {
-	static char	stash[BUFFER_SIZE + 1];
+	static char	stash[1024][BUFFER_SIZE + 1];
 	char		*line;
 	int			line_len;
 	int			i;
 
-	line = read_line(fd, stash);
+	line = read_line(fd, stash[fd]);
 	if (!line)
 		return (NULL);
 	line_len = ft_line_len(line);
 	i = 0;
 	while (line[line_len + i])
 	{
-		stash[i] = line[line_len + i];
+		stash[fd][i] = line[line_len + i];
 		i++;
 	}
-	stash[i] = '\0';
+	stash[fd][i] = '\0';
 	line = ft_substr(line, 0, line_len);
 	return (line);
 }
