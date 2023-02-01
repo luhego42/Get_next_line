@@ -6,11 +6,14 @@
 /*   By: luhego <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 16:28:03 by luhego            #+#    #+#             */
-/*   Updated: 2023/01/31 17:17:31 by luhego           ###   ########.fr       */
+/*   Updated: 2023/02/01 14:53:23 by luhego           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+#include <stdio.h> // a retirer
+
 
 static int	ft_line_len(char *line)
 {
@@ -67,16 +70,19 @@ static char	*read_line(int fd, char *stash)
 	int		sizeofread;
 	char	*line;
 
-	line = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+	line = ft_calloc(BUFFER_SIZE, sizeof(char));
 	sizeofread = 1;
 	if (stash)
 		ft_strlcat(line, stash, BUFFER_SIZE);
 	while (sizeofread > 0 && ft_strrchr(line, '\n') == NULL)
 	{
 		sizeofread = read(fd, stash, BUFFER_SIZE);
-		line = ft_strjoin(line, stash);
+		if (sizeofread)
+			line = ft_strjoin(line, stash);
+		if (sizeofread < BUFFER_SIZE)
+			break ;
 	}
-	if (!sizeofread)
+	if (sizeofread < 0)
 	{
 		free(line);
 		return (NULL);
@@ -91,17 +97,42 @@ char	*get_next_line(int fd)
 	int			line_len;
 	int			i;
 
-	line = read_line(fd, stash);
-	if (!line)
+	if (fd < 0 || read(fd, stash, 0))
+	{
 		return (NULL);
+	}
+	line = read_line(fd, stash);
+	if (line[0] == '\0' || line == NULL)
+	{
+		free(line);
+		return (NULL);
+	}
 	line_len = ft_line_len(line);
 	i = 0;
-	while (line[line_len + i])
+	while (line[line_len + i - 1])
 	{
 		stash[i] = line[line_len + i];
 		i++;
 	}
-	stash[i] = '\0';
+	stash[i] = '\0';	
 	line = ft_substr(line, 0, line_len);
 	return (line);
 }
+
+/*#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+int	main(int argc, char **argv)
+{	
+	char	*string;
+	(void)argc;
+	int fd = open(argv[1], O_RDONLY);
+	printf("%d\n", fd);
+	do
+	{
+		string = get_next_line(fd);
+		printf("[%s]\n", string);
+	} while (string != NULL);
+	free(string);
+}*/

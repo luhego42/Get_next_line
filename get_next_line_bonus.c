@@ -6,7 +6,7 @@
 /*   By: luhego <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 16:28:03 by luhego            #+#    #+#             */
-/*   Updated: 2023/01/31 16:40:14 by luhego           ###   ########.fr       */
+/*   Updated: 2023/02/01 18:20:15 by luhego           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,12 @@ static char	*read_line(int fd, char *stash)
 	while (sizeofread > 0 && ft_strrchr(line, '\n') == NULL)
 	{
 		sizeofread = read(fd, stash, BUFFER_SIZE);
-		line = ft_strjoin(line, stash);
+		if (sizeofread)
+			line = ft_strjoin(line, stash);
+		if (sizeofread < BUFFER_SIZE)
+			break ;
 	}
-	if (!sizeofread)
+	if (sizeofread < 0)
 	{
 		free(line);
 		return (NULL);
@@ -91,17 +94,24 @@ char	*get_next_line(int fd)
 	int			line_len;
 	int			i;
 
-	line = read_line(fd, stash[fd]);
-	if (!line)
+	if (fd < 0 || read(fd, stash[fd], 0))
+	{
 		return (NULL);
+	}
+	line = read_line(fd, stash[fd]);
+	if (line[0] == '\0' || line == NULL)
+	{
+		free(line);
+		return (NULL);
+	}
 	line_len = ft_line_len(line);
 	i = 0;
-	while (line[line_len + i])
+	while (line[line_len + i - 1])
 	{
 		stash[fd][i] = line[line_len + i];
 		i++;
 	}
-	stash[fd][i] = '\0';
+	stash[fd][i] = '\0';	
 	line = ft_substr(line, 0, line_len);
 	return (line);
 }
