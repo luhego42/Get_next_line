@@ -6,7 +6,7 @@
 /*   By: luhego <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 16:28:03 by luhego            #+#    #+#             */
-/*   Updated: 2023/02/01 14:53:23 by luhego           ###   ########.fr       */
+/*   Updated: 2023/02/02 16:59:27 by luhego           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ static char	*read_line(int fd, char *stash)
 	while (sizeofread > 0 && ft_strrchr(line, '\n') == NULL)
 	{
 		sizeofread = read(fd, stash, BUFFER_SIZE);
+		stash[sizeofread] = '\0';
 		if (sizeofread)
 			line = ft_strjoin(line, stash);
 		if (sizeofread < BUFFER_SIZE)
@@ -118,8 +119,8 @@ char	*get_next_line(int fd)
 	line = ft_substr(line, 0, line_len);
 	return (line);
 }
-
-/*#include <sys/types.h>
+/*
+#include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 
@@ -128,11 +129,11 @@ int	main(int argc, char **argv)
 	char	*string;
 	(void)argc;
 	int fd = open(argv[1], O_RDONLY);
-	printf("%d\n", fd);
+	//printf("%d\n", fd);
 	do
 	{
 		string = get_next_line(fd);
-		printf("[%s]\n", string);
+		printf("%s\n", string);
 	} while (string != NULL);
 	free(string);
 }*/
